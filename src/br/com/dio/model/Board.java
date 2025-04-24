@@ -70,10 +70,4 @@ public class Board {
         return hasErrors() && getStatus().equals(COMPLETE);
     }
 
-    public boolean fixedSpace(final int col, final int row){
-        space = spaces.get(col).get(row);
-
-        return !space.isFixed();
-    }
-
 }
