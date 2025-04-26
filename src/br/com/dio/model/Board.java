@@ -39,27 +39,17 @@ public class Board {
 
     public boolean changeValue(final int col, final int row, final int value){
 
-        space = spaces.get(col).get(row);
-
-        if(space.isFixed()){
-            return false;
-        }
-
+        boolean status = fixedSpace(col,row);
         space.setActual(value);
-        return true;
+        return status;
 
     }
 
     public boolean clearValue(final int col, final int row){
 
-        space = spaces.get(col).get(row);
-
-        if(space.isFixed()){
-            return false;
-        }
-
+        boolean status = fixedSpace(col,row);
         space.clearSpace();
-        return true;
+        return status;
     }
 
     public void reset(){
@@ -69,5 +59,14 @@ public class Board {
     public boolean gameIsFinished(){
         return hasErrors() && getStatus().equals(COMPLETE);
     }
+
+    public boolean fixedSpace(final int col, final int row){
+
+        space = spaces.get(col).get(row);
+
+        return !space.isFixed();
+
+    }
+
 
 }
