@@ -17,17 +17,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-
-
-
-
-
         final var positions = generateSudoku();
         System.out.print(positions);
-
-
-
-
 
         //teste board
         /*
