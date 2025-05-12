@@ -15,8 +15,42 @@ public class Main {
 
     public static void main(String[] args) {
 
-        final var positions = generateSudoku();
+        boolean[][] randomPositions = new boolean[BOARD_LIMIT][BOARD_LIMIT];
+
+        for (int i = 0 ; i < BOARD_LIMIT; i++){
+            for(int j = 0; j < BOARD_LIMIT; j++){
+
+                randomPositions[i][j] = true;
+
+            }
+        }
+
+        final var matrixTrueFalse = removeKDigits(randomPositions, 45);
+        final var generatedSudoku = generateSudoku();
+
+       // System.out.print(Arrays.deepToString(generatedSudoku));
+
+
+        Map<String,String> positions = new HashMap<>();
+
+        for(int i = 0 ; i < BOARD_LIMIT; i++){
+
+            for(int j = 0; j < BOARD_LIMIT; j++){
+
+                positions.put(i+","+j, generatedSudoku[i][j]+","+matrixTrueFalse[i][j]);
+
+            }
+
+
+        }
+
         System.out.print(positions);
+
+
+
+
+
+       // System.out.print(positions);
 
         //teste board
         /*
@@ -35,19 +69,21 @@ public class Main {
     }
 
 
-    public static Map<String, String> generateSudoku(){
+    public static int[][] generateSudoku(){
 
-        Map<String,String > coordinates = new HashMap<>(81);
+        int[][] coordinates = new int[BOARD_LIMIT][BOARD_LIMIT];
+
+
         fillDiagonal(coordinates);
         fillRemaining(coordinates, 0, 3);
-        removeKDigits(coordinates, 45);
+
         return coordinates;
 
     }
 
-    private static void fillDiagonal(Map<String, String> coordinates){
+    private static void fillDiagonal(int[][] coordinates){
 
-        for(int i = 0; i < BOARD_LIMIT; i++){
+        for(int i = 0; i < BOARD_LIMIT; i+=3){
 
             fillBox(coordinates, i, i);
 
@@ -55,7 +91,7 @@ public class Main {
 
     }
 
-    private static void fillBox(Map<String, String> coordinates, int rowStart, int colStart){
+    private static void fillBox(int[][] coordinates, int rowStart, int colStart){
 
         List<Integer> numbers = new ArrayList<>();
 
@@ -72,7 +108,7 @@ public class Main {
 
             for(int j = 0 ; j < 3; j++){
 
-                coordinates.put((rowStart)+","+(numIndex), numbers.get(numIndex++)+","+true);
+                coordinates[rowStart+i][colStart+j] = numbers.get(numIndex++);
 
             }
 
@@ -81,11 +117,11 @@ public class Main {
 
     }
 
-    private static boolean isSafe(Map<String, String> coordinates, int row, int col, int num){
+    private static boolean isSafe(int[][] coordinates, int row, int col, int num){
 
         for(int c = 0; c < BOARD_LIMIT; c++){
 
-            if(coordinates.get(row+","+c).contains(String.valueOf(num))){
+            if(coordinates[row][c] == num){
 
                 return false;
 
@@ -95,7 +131,7 @@ public class Main {
 
         for(int r = 0; r < BOARD_LIMIT; r++){
 
-            if(coordinates.get(r+","+col).contains(String.valueOf(num))){
+            if(coordinates[r][col] == num){
 
                 return false;
 
@@ -103,14 +139,14 @@ public class Main {
 
         }
 
-        int boxRowStart = row  - row % 3;
-        int boxColStart = col -  col % 3;
+        int boxRowStart = row - row % 3;
+        int boxColStart = col - col % 3;
 
         for(int r = boxRowStart; r < boxRowStart + 3; r++){
 
             for(int c = boxColStart; c < boxColStart + 3; c++){
 
-                if(coordinates.get(r+","+c).contains(String.valueOf(num))){
+                if(coordinates[r][c] == num){
 
                     return false;
                 }
@@ -123,7 +159,7 @@ public class Main {
 
     }
 
-    private static boolean fillRemaining(Map<String, String> coordinates, int row, int col){
+    private static boolean fillRemaining(int[][] coordinates, int row, int col){
 
         if(col >= BOARD_LIMIT && row < BOARD_LIMIT - 1){
 
@@ -158,11 +194,11 @@ public class Main {
 
         for(int num = 1; num <= BOARD_LIMIT;num++){
             if(isSafe(coordinates,row,col,num)){
-                coordinates.put(row+","+col, num+","+true);
+                coordinates[row][col] = num;
                 if(fillRemaining(coordinates, row, col + 1)){
                     return true;
                 }
-                coordinates.put(row+","+col, num+","+false);
+                coordinates[row][col] = 0;
 
             }
 
@@ -171,7 +207,7 @@ public class Main {
 
     }
 
-    private static void removeKDigits(Map<String, String> coordinates, int k){
+    private static boolean[][] removeKDigits(boolean [][] randomPositions, int k){
 
 
         Random random = new Random();
@@ -181,15 +217,13 @@ public class Main {
             int row = random.nextInt(BOARD_LIMIT);
             int col = random.nextInt(BOARD_LIMIT);
 
-            if(coordinates.get(row+","+col).contains("true")) {
-                String value = coordinates.get(row + "," + col);
-                String[] newString = value.split(",");
-                newString[1] = "false";
-                value = newString[0]+","+newString[1];
-                coordinates.replace(row+","+col, value);
+            if(randomPositions[row][col]) {
+                randomPositions[row][col] = false;
                 count++;
             }
 
         }
+
+        return randomPositions;
     }
 }
