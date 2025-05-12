@@ -1,8 +1,11 @@
 package br.com.dio;
 
 import br.com.dio.model.Board;
+import br.com.dio.model.Space;
 
 import java.util.*;
+
+import static java.util.Objects.nonNull;
 
 
 public class Main {
@@ -31,7 +34,7 @@ public class Main {
        // System.out.print(Arrays.deepToString(generatedSudoku));
 
 
-        Map<String,String> positions = new HashMap<>();
+        final Map<String,String> positions = new HashMap<>();
 
         for(int i = 0 ; i < BOARD_LIMIT; i++){
 
@@ -44,7 +47,38 @@ public class Main {
 
         }
 
-        System.out.print(positions);
+        var option = -1;
+        while(true){
+
+            System.out.println("Selecione uma das opções a seguir");
+            System.out.println("1 - Iniciar novo Jogo");
+            System.out.println("2 - Colocar um novo numero");
+            System.out.println("3 - Remover um numero");
+            System.out.println("4 - Visualizar Jogo atual");
+            System.out.println("5 - Verificar Status do Jogo");
+            System.out.println("6 - Limpar jogo");
+            System.out.println("7 - Finalizar Jogo");
+
+            option = scanner.nextInt();
+
+            switch(option){
+
+                case 1 -> startGame(positions);
+                case 2 -> inputNumber();
+                case 3 -> removeNumber();
+                case 4 -> showCurrentGame();
+                case 5 -> showGameStatus();
+                case 6 -> clearGame();
+                case 7 -> finishGame();
+                case 8 -> System.exit(0);
+                default -> System.out.println("Opção Invalida...selecione uma das opções do menu");
+
+            }
+
+
+        }
+
+        //System.out.print(positions);
 
 
 
@@ -65,6 +99,49 @@ public class Main {
         boolean teste = board.clearValue(0,1);
         System.out.print(teste);
         */
+
+    }
+
+    private static void finishGame() {
+    }
+
+    private static void clearGame() {
+    }
+
+    private static void showGameStatus() {
+    }
+
+    private static void showCurrentGame() {
+    }
+
+    private static void removeNumber() {
+    }
+
+    private static void inputNumber() {
+    }
+
+    private static void startGame(final Map<String, String> positions) {
+
+        if(nonNull(board)){
+
+            System.out.println("O Jogo já foi iniciado");
+            return;
+
+        }
+
+        List<List<Space>> spaces = new ArrayList<>();
+        for(int i = 0; i < BOARD_LIMIT; i++){
+            spaces.add(new ArrayList<>());
+            for(int j = 0; j < BOARD_LIMIT; j++){
+                var positionConfig = positions.get("%s,%s".formatted(i,j));
+                var expected = Integer.parseInt(positionConfig.split(",")[0]);
+                var fixed = Boolean.getBoolean(positionConfig.split(",")[1]);
+                var currentSpace = new Space(expected, fixed);
+                spaces.get(i).add(currentSpace);
+            }
+        }
+        board = new Board(spaces);
+        System.out.println("O jogo está pronto para começar");
 
     }
 
