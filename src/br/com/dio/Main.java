@@ -5,6 +5,7 @@ import br.com.dio.model.Space;
 
 import java.util.*;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 
@@ -78,28 +79,6 @@ public class Main {
 
         }
 
-        //System.out.print(positions);
-
-
-
-
-
-       // System.out.print(positions);
-
-        //teste board
-        /*
-        Space space = new Space(1, true);
-        Space space2 = new Space(2, false);
-        List<Space> listSpace = new ArrayList<>();
-        List<List<Space>> spaces = new ArrayList<>();
-        listSpace.add(space);
-        listSpace.add(space2);
-        spaces.add(listSpace);
-        Board board = new Board(spaces);
-        boolean teste = board.clearValue(0,1);
-        System.out.print(teste);
-        */
-
     }
 
     private static void finishGame() {
@@ -115,19 +94,47 @@ public class Main {
     }
 
     private static void removeNumber() {
+
+        verifyIfGameNotStarted();
+
+        System.out.println("Informe a coluna em que o numero será removido:");
+        var col = runUntilGetValidNumber(0,8);
+        System.out.println("Informe a linha em que o numero será removido:");
+        var row = runUntilGetValidNumber(0,8);
+        System.out.printf("Informe o numero que vai sair na posição (%s, %s)\n", col , row);
+
+        if(!board.clearValue(col, row)){
+
+            System.out.printf("A posicao (%s, %s) tem um valor fixo\n", col, row);
+
+
+        }
+
     }
 
     private static void inputNumber() {
+
+
+        verifyIfGameNotStarted();
+
+        System.out.println("Informe a coluna em que o numero será inserido:");
+        var col = runUntilGetValidNumber(0,8);
+        System.out.println("Informe a linha em que o numero será inserido:");
+        var row = runUntilGetValidNumber(0,8);
+        System.out.printf("Informe o numero que vai entrar na posição (%s, %s)\n", col , row);
+        var value = runUntilGetValidNumber(1,9);
+        if(!board.changeValue(col, row, value)){
+
+            System.out.printf("A posicao (%s, %s) tem um valor fixo\n", col, row);
+
+
+        }
+
     }
 
     private static void startGame(final Map<String, String> positions) {
 
-        if(nonNull(board)){
-
-            System.out.println("O Jogo já foi iniciado");
-            return;
-
-        }
+        verifyIfGameIsStarted();
 
         List<List<Space>> spaces = new ArrayList<>();
         for(int i = 0; i < BOARD_LIMIT; i++){
@@ -302,5 +309,42 @@ public class Main {
         }
 
         return randomPositions;
+    }
+
+    private static int runUntilGetValidNumber(final int min, final int max){
+
+       var current = scanner.nextInt();
+
+       while(current < min || current > max){
+
+           System.out.printf("Informe um numero entre %s e %s\n", min, max);
+           current = scanner.nextInt();
+
+       }
+
+       return current;
+
+
+    }
+
+    private static void verifyIfGameNotStarted(){
+
+        if(isNull(board)){
+
+            System.out.println("O Jogo não foi iniciado");
+            return;
+
+        }
+
+    }
+
+    private static void verifyIfGameIsStarted(){
+
+        if(nonNull(board)){
+
+            System.out.println("O Jogo já foi iniciado");
+            return;
+
+        }
     }
 }
