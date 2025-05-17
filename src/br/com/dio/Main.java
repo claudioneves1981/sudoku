@@ -48,6 +48,8 @@ public class Main {
 
         }
 
+        System.out.println(positions);
+
         var option = -1;
         while(true){
 
@@ -91,6 +93,25 @@ public class Main {
     }
 
     private static void showCurrentGame() {
+
+        verifyIfGameNotStarted();
+
+        var args = new Object[81];
+        var argPos = 0;
+        for(int i = 0 ; i < BOARD_LIMIT; i++){
+            for(var col : board.getSpaces()){
+
+                args[argPos++] = " " + ((isNull(col.get(i).getActual())) ? " " : col.get(i).getActual());
+
+            }
+
+        }
+
+        System.out.println("Seu jogo se encontra da seguinte forma:");
+        System.out.println(board.getSpaces());
+        //System.out.printf((BOARD_TEMPLATE) + "\n", args);
+
+
     }
 
     private static void removeNumber() {
