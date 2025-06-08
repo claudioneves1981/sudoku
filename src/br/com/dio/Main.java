@@ -5,6 +5,7 @@ import br.com.dio.model.Space;
 
 import java.util.*;
 
+import static br.com.dio.util.BoardTemplate.BOARD_TEMPLATE;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -48,7 +49,7 @@ public class Main {
 
         }
 
-        System.out.println(positions);
+        //System.out.println(positions);
 
         var option = -1;
         while(true){
@@ -84,12 +85,54 @@ public class Main {
     }
 
     private static void finishGame() {
+
+        verifyIfGameNotStarted();
+
+        if(board.gameIsFinished()){
+            System.out.println("Parabens , você concluiu o jogo");
+            showCurrentGame();
+            board = null;
+
+        }else if(board.hasErrors()){
+
+            System.out.println("Seu jogo contem erros, verifique teu board e ajuste-o");
+
+        }else{
+
+            System.out.println("Você ainda precisa preencher algum espaço");
+
+        }
     }
 
     private static void clearGame() {
+
+        verifyIfGameNotStarted();
+
+        System.out.println("Tem certeza que seja limpar o seu jogo e perder todo seu progresso?");
+
+        var confirm = scanner.next();
+        while(!confirm.equalsIgnoreCase("sim") || !confirm.equalsIgnoreCase("não")){
+            System.out.println("Informe 'sim' ou 'não': ");
+            confirm = scanner.next();
+        }
+
+        if(confirm.equalsIgnoreCase("sim")){
+            board.reset();
+        }
     }
 
     private static void showGameStatus() {
+
+        verifyIfGameNotStarted();
+
+     System.out.printf("O jogo atualmente se encontra no status %s\n", board.getStatus().getLabel());
+     if(board.hasErrors()) {
+         System.out.println("O jogo contem erros");
+     }else{
+         System.out.println("O jogo não contem erros");
+     }
+
+
     }
 
     private static void showCurrentGame() {
@@ -103,14 +146,15 @@ public class Main {
 
                 args[argPos++] = " " + ((isNull(col.get(i).getActual())) ? " " : col.get(i).getActual());
 
+
             }
 
         }
 
-        System.out.println("Seu jogo se encontra da seguinte forma:");
-        System.out.println(board.getSpaces());
-        //System.out.printf((BOARD_TEMPLATE) + "\n", args);
 
+
+        System.out.println("Seu jogo se encontra da seguinte forma:");
+        System.out.printf((BOARD_TEMPLATE) + "%n", args);
 
     }
 
@@ -122,7 +166,6 @@ public class Main {
         var col = runUntilGetValidNumber(0,8);
         System.out.println("Informe a linha em que o numero será removido:");
         var row = runUntilGetValidNumber(0,8);
-        System.out.printf("Informe o numero que vai sair na posição (%s, %s)\n", col , row);
 
         if(!board.clearValue(col, row)){
 
@@ -163,8 +206,8 @@ public class Main {
             for(int j = 0; j < BOARD_LIMIT; j++){
                 var positionConfig = positions.get("%s,%s".formatted(i,j));
                 var expected = Integer.parseInt(positionConfig.split(",")[0]);
-                var fixed = Boolean.getBoolean(positionConfig.split(",")[1]);
-                var currentSpace = new Space(expected, fixed);
+                var fixed = positionConfig.split(",")[1];
+                Space currentSpace = new Space(expected, Boolean.parseBoolean(fixed));
                 spaces.get(i).add(currentSpace);
             }
         }
