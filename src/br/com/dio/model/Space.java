@@ -37,6 +37,6 @@ public class Space {
     }
 
     public boolean isFixed() {
-        return !fixed;
+        return fixed;
     }
 }
