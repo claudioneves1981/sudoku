@@ -79,6 +79,7 @@ public class MainScreen {
         mainFrame = new MainFrame(dimension, mainPanel);
         boardService = new BoardService(gameConfig());
 
+
         mainPanel = getPanelSpaces(boardService,mainPanel);
 
         addNewGameButton(mainPanel, mainFrame);
