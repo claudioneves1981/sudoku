@@ -28,7 +28,7 @@ public class MainScreen {
 
     private final static Dimension dimension = new Dimension(600,600);
 
-    private final BoardService boardService;
+    private BoardService boardService;
     private final NotifierService notifierService;
 
     private JButton finishGameButton;
@@ -47,7 +47,7 @@ public class MainScreen {
     }
 
 
-    public void addNewGameButton(JPanel mainPanel, JFrame mainFrame) {
+    private void addNewGameButton(JPanel mainPanel, JFrame mainFrame) {
 
         newGameButton = new NewGameButton(e -> {
 
@@ -77,17 +77,9 @@ public class MainScreen {
         JPanel mainPanel = new MainPanel(dimension);
         mainFrame.dispose();
         mainFrame = new MainFrame(dimension, mainPanel);
+        boardService = new BoardService(gameConfig());
 
-
-        for (int r = 0; r < 9; r+=3) {
-            var endRow = r + 2;
-            for (int c = 0; c < 9; c+=3) {
-                var endCol = c + 2;
-                var spaces = getSpacesFromSector(boardService.initBoard(gameConfig()), c, endCol, r, endRow);
-                JPanel sector = generateSection(spaces);
-                mainPanel.add(sector);
-            }
-        }
+        mainPanel = getPanelSpaces(boardService,mainPanel);
 
         addNewGameButton(mainPanel, mainFrame);
         addResetButton(mainPanel);
@@ -98,12 +90,7 @@ public class MainScreen {
 
     }
 
-
-
-    public void buildMainScreen(){
-
-        JPanel mainPanel = new MainPanel(dimension);
-        JFrame mainFrame = new MainFrame(dimension, mainPanel);
+    public JPanel getPanelSpaces(BoardService boardService, JPanel mainPanel){
 
         for (int r = 0; r < 9; r+=3) {
             var endRow = r + 2;
@@ -115,6 +102,18 @@ public class MainScreen {
             }
         }
 
+        return mainPanel;
+
+    }
+
+
+
+    public void buildMainScreen(){
+
+        JPanel mainPanel = new MainPanel(dimension);
+        JFrame mainFrame = new MainFrame(dimension, mainPanel);
+
+        mainPanel = getPanelSpaces(boardService,mainPanel);
 
         addNewGameButton(mainPanel, mainFrame);
         addResetButton(mainPanel);
@@ -134,6 +133,7 @@ public class MainScreen {
                 resetButton.setEnabled(false);
                 checkGameStatusButton.setEnabled(false);
                 finishGameButton.setEnabled(false);
+                newGameButton.setEnabled(true);
             } else {
                 var message = "Seu jogo está incompleto deseja mesmo encerrar?";
                 var dialogResult = showConfirmDialog(
